@@ -16,6 +16,9 @@ class Song{
 		this.year = year;
 	}
 
+	public String getName(){return name;}
+	public String getArtist(){return artist;}
+
 	@Override
 
 	public String toString(){
@@ -35,6 +38,10 @@ class SongList{
 
 	public void setName(String str){
 		this.name = str;
+	}
+
+	public String getName(){
+		return name;
 	}
 
 	public void add(Song s){
@@ -135,7 +142,7 @@ class SongList{
 			Song temp = head;
 
 			for(int i = 0; i<size(); i++){
-				str+= indexOf(temp) + ".- " + temp.toString() + "\n";
+				str+= indexOf(temp) + 1 + ".- " + temp.toString() + "\n";
 				temp = temp.next;
 			}
 
@@ -170,47 +177,107 @@ public class Playlist{
 		playlist.add(s5);
 
 		int dec;
+		boolean playing = false;
+		Song currentPlay = null;
 
 		do{
-			menu(playlist);
-
+			menu(playlist, playing, currentPlay);
 			System.out.println("Type the number of your selection");
 			dec = input.nextInt();
 
 			switch(dec){
 
-				case 1:
+				case 1: //ADD SONG
+					input.nextLine();
+					String n, a;
+					int y;
+					System.out.println("What's the name of the Song ?");
+					n = input.nextLine();
+					System.out.println("What's the name of the Artist ?");
+					a = input.nextLine();
+					System.out.println("In what year was the song released ?");
+					y = input.nextInt();
+
+					Song ns = new Song(n,a,y);
+					playlist.add(ns);
+
 					break;
 
-				case 2:
-				System.out.println("Type the number of the song you want to remove");
-				int song = input.nextInt();
-				playlist.remove(song);
+				case 2: //REMOVE SONG
+					System.out.println("Type the number of the song you want to remove");
+					int song = input.nextInt();
+					playlist.remove(song-1);
+					System.out.println();
 					break;
 
-				case 3:
+				case 3: //RENAME PLAYLIST
+
+					input.nextLine();
+					String name;
+					System.out.println("What's the new name of the playlist ?");
+					name = input.nextLine();
+					playlist.setName(name);
+
 					break;
 
-				case 4:
+				case 4: //PLAY SONG
+
+					int i;
+					System.out.println("Type the number of the song you want to play:");
+					i = input.nextInt();
+					playing = true;
+					currentPlay = playlist.get(i-1);
 					break;
 
-				case 5:
-				System.exit(0);
+				case 5: //NEXT SONG
+
+					if(currentPlay.next == null){ //THERE ISN'T A SONG CURRENTLY Playing
+						currentPlay = playlist.get(0);
+					}else{
+						currentPlay = currentPlay.next;
+					}
+
+					break;
+
+				case 6://PREVIOUS SONG
+
+					if(currentPlay.prev == null){ //THERE ISN'T A SONG CURRENTLY Playing
+						currentPlay = playlist.get(playlist.size() - 1);
+					}else{
+						currentPlay = currentPlay.prev;
+					}
+
+					break;
+
+				case 7: //EXIT
+					System.exit(0);
 					break;
 
 			}
+
 
 		}while(true);
 
 	}
 
-	public static void menu(SongList playlist){
+	public static void menu(SongList playlist, boolean playing, Song currentPlay){
+		System.out.println("----------------------------------------");
+		System.out.println("\t       " + playlist.getName());
+		System.out.println("----------------------------------------");
 		System.out.println(playlist.toString());
+		System.out.println("----------------------------------------");
 		System.out.println("1.- Add Song");
 		System.out.println("2.- Remove Song");
 		System.out.println("3.- Rename Playlist");
 		System.out.println("4.- Play Song");
-		System.out.println("5.- Exit");
+		if(playing) {
+			System.out.println("5.- Next Song");
+			System.out.println("6.- Previous Song");
+		}
+		System.out.println("7.- Exit");
+		System.out.println("----------------------------------------");
+		if(playing) 
+				System.out.println("** Now Playing '"+  currentPlay.getName() + "' by " + currentPlay.getArtist() + " **");
 
 	}
 
