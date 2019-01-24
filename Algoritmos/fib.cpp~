@@ -1,0 +1,22 @@
+#include <iostream>;
+
+using namespace std;
+
+int fib(int n){
+
+  if(n == 1 || n == 0){
+    return 0;
+  }
+  else{
+    return fib(n) + fib(n-1);
+  }
+
+}
+
+int main(){
+
+  int f = fib(5);
+  cout << f << endl;
+    return 0;
+}
+ 
